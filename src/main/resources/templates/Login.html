@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            outline: none;
+            border: none;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: darkorange;
+        }
+        .shell{
+            width: 300px;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            perspective: 1000px;
+        }
+        .top{
+             width: 300px;
+             display: flex;
+             cursor: pointer;
+             justify-content: space-evenly;
+        }
+        .off{
+            color: #fff;
+            transition: .5s;
+            font:300 20px '';
+        }
+        .on{
+            color: #fff;
+            transition: .5s;
+            font:300 20px '';
+        }
+        .button{
+            width: 60px;
+            height: 25px;
+            background-color: rgb(255, 235, 167);
+            border-radius: 20px;
+            position: relative;
+        }
+        .ball{
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: rgb(46,45,56);
+            border-radius: 50%;
+            transition: .5s;
+            box-shadow: 0 0 10px #000;
+            left: 0;
+            tranform: translate(-1px);
+        }
+        .bottom{
+            width: 300px;
+            height: 250px;
+            background-color: aquamarine;
+            transform-style: preserve-3d;
+            position: relative;
+            transition: .7s;
+            border-radius: 5px;
+        }
+        .bottom>div{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+        .bottom>div h2{
+            color: #fff;
+        }
+        .bottom>div input{
+            width: 200px;
+            height: 25px;
+            padding: 0 10px;
+            background-color: rgb(31, 32, 41);
+            color: #fff;
+        }
+        .bottom>div button{
+            witdh: 80px;
+            height: 30px;
+            color: #333;
+            font-size: 15px;
+            background-color: rgb(255, 235, 167);
+            border-radius: 4px;
+            transition: .3s;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .bottom>div button:hover {
+            box-shadow: 0 0 10px rgb(255, 235, 167);
+        }
+        .signIn{
+            transform: translateZ(70px);
+        }
+        .signUp{
+            position: absolute;
+            top: 0;
+            transform: translateZ(-70px) rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="top">
+            <span class="off">登录</span>
+            <div class="button">
+                <div class="ball"></div>
+            </div>
+            <span class="on">注册</span>
+        </div>
+        <div class="bottom">
+            <div class="signIn">
+                <h2>登录</h2>
+                <input type="text" placeholder="Username" >
+                <input type="text" placeholder="Password" >
+                <button id="login">登录</button>
+            </div>
+
+            <div class="signUp">
+                <h2>注册</h2>
+                <input type="text" placeholder="Username" >
+                <input type="text" placeholder="Password" >
+                <input type="text" placeholder="Code">
+                <button id="getCode"> 获取验证码</button>
+                <button id="gogoin">注册</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var button = document.querySelector('.button');
+        var ball = document.querySelector('.ball');
+        var bottom = document.querySelector('.bottom');
+        var off = document.querySelector('.off');
+        var on = document.querySelector('.on');
+        var index = 0;
+        button.addEventListener('click',()=> {
+            if(index === 0){
+                index = 1;
+                ball.style.left = 61+'%';
+                on.style.opacity = 1;
+                off.style.opacity = .5;
+                bottom.style.transform = "rotateY(180deg)";
+            }else{
+                index = 0;
+                ball.style.left = 0+'%';
+                on.style.opacity = .5;
+                off.style.opacity = 1;
+                bottom.style.transform = "rotateY(0deg)";
+            }
+        });
+
+        $("#getCode").click(function(){
+            $.ajax({
+                url: "/getCode",
+                type: "GET",
+                success: function (data) {
+                    alert(data);
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            })
+        });
+
+        $("#gogoin").click(function(){
+           $.ajax({
+                url: "/register",
+                type: "GET",
+                data: {
+                    username: $("#username").val(),
+                    password: $("#password").val(),
+                    code: $("#code").val()
+                },
+                success: function (data) {
+                    alert(data);
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+           })
+        });
+    </script>
+</body>
+</html>
